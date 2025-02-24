@@ -4,6 +4,34 @@ from googlesearch import search
 
 from transformers import pipeline
 
+def classify_question(question: str):
+    # 비교 질문 패턴
+    comparison_patterns = [
+        r"(.+)와 (.+)의 차이",
+        r"(.+) vs (.+)",
+        r"(.+)랑 (.+) 뭐가 달라"
+    ]
+
+    # 개념 질문 패턴
+    concept_patterns = [
+        r"(.+)이[란] 무엇",
+        r"(.+)이 뭐야",
+        r"(.+)을 설명"
+    ]
+
+    # 비교 질문 감지
+    for pattern in comparison_patterns:
+        match = re.search(pattern, question)
+        if match:
+            return "comparison", match.groups()
+        
+    for pattern in concept_patterns:
+        match = re.search(pattern, question)
+        if match:
+            return "concept", match.groups()
+    
+    return "general_search", None
+
 def search_wikipedia(query, lang="en"):
     user_agent = "AmadeusChatbot/1.0 (josephwjp8@gmail.com)"
     wiki = wikipediaapi.Wikipedia(language = lang, user_agent= user_agent)
