@@ -1,8 +1,17 @@
 import re
 import wikipediaapi
 from googlesearch import search
-
+from langdetect import detect
 from transformers import pipeline
+
+def generate_gpt_response(prompt):
+    """ Meta Llama 2 모델 사용 """
+    generator = pipeline("text-generation", model = "meta-llama/Llama-2-7b-chat-hf")
+    response = generator(prompt, max_length=200, do_sample=True)
+    return response[0]["generated_text"].strip()
+
+def detect_language(text):
+    return detect(text)
 
 def classify_question(question: str):
     # 비교 질문 패턴
@@ -48,7 +57,7 @@ def search_google(query):
         if search_results:
             return f"Google 검색 결과:\n" + "\n".join(search_results)
         else:
-            return "Google 검색에서도 결과를 찾지 못했습니다."
+            return "Google 검색에서도 결과를 찾지 못했어."
     except Exception as e:
         return f"Google 검색 중 오류 발생: {e}"
     
@@ -63,26 +72,24 @@ def format_bullet_points(content):
     return bullet_points
     
 def chatbot_response(user_input):
-    search_match = re.search(r'(.+?)\s*(?:검색(?:해줘)?|조사(?:해줘)?|알려줘)', user_input)
-    
-    if search_match:
-        search_query = search_match.group(1).strip()  # 검색어 추출
-        if search_query:  
-            wiki_result = search_wikipedia(search_query)
-            if wiki_result:
-                summarized = summarize_content(wiki_result)
-                formatted = format_bullet_points(summarized)
-                return f"주요 내용은 다음과 같아.\n{formatted}"
-            else:
-                google_result = search_google(search_query)
-                summarized = summarize_content(google_result)
-                formatted = format_bullet_points(summarized)
-                return f"해당 주제에 대해 검색된 링크를 제공해줄게.\n{formatted}"
-        
-        else:
-            return "검색할 내용을 말해줘!"
-    
-    return "잘 이해하지 못했어. 다른 질문을 해줘!"
+    lang = detect_language(user_input)
+    question_type, details = classify_question(user_input)
+    if question_type == "comparison":
+        item1, item2 = details
+        wiki_result1 = search_wikipedia(item1, lang=lang)
+        wiki_result2 = search_wikipedia(item2, lang=lang)
+        if wiki_result1 and wiki_result2:
+            return f"{item1}과 {item2}의 차이:\n- {wiki_result1[:300]}\n- {wiki_result2[:300]}"
+        return "비교할 내용을 찾을 수 없어.."
+    elif question_type == "concept":
+        concept = details[0]
+        wiki_result = search_wikipedia(concept, lang=lang)
+        if wiki_result:
+            return wiki_result
+        google_result = search_google(concept)
+        return google_result if google_result else "검색 결과가 없어.."
+    else:
+        return generate_gpt_response(user_input)
     
 print("아마데우스와 대화를 시작하세요! (종료하려면 '종료' 입력)")
 
