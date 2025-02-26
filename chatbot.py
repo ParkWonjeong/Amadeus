@@ -2,11 +2,15 @@ import re
 import wikipediaapi
 from googlesearch import search
 from langdetect import detect
-from transformers import pipeline
+from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+
+model_name = "meta-llama/Llama-2-7b-chat-hf"
+tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=True)
+model = AutoModelForCausalLM.from_pretrained(model_name, use_auth_token=True)
+
+generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
 
 def generate_gpt_response(prompt):
-    """ Meta Llama 2 모델 사용 """
-    generator = pipeline("text-generation", model = "meta-llama/Llama-2-7b-chat-hf")
     response = generator(prompt, max_length=200, do_sample=True)
     return response[0]["generated_text"].strip()
 
