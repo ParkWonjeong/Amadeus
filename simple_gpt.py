@@ -55,7 +55,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 criterion = nn.CrossEntropyLoss()
 
 # 학습 데이터 (예제)
-text = "Hello, how are you today?"
+text = "Hello, how are you today? I am a chatbot that can generate text based on your input. My goal is to help you understand GPT models and how they work."
 tokens = tokenizer.encode(text, return_tensors="pt")
 
 # 학습 루프
@@ -67,6 +67,7 @@ for epoch in range(100):
     loss.backward()
     optimizer.step()
     print(f"Epoch {epoch+1}, Loss: {loss.item()}")
+    print(f"Training data shape: {tokens.shape}")
 
 print("✅ Training complete!")
 
@@ -78,7 +79,7 @@ def generate_text(model, prompt, max_length=20):
             output = model(tokens)
             next_token = torch.argmax(output[:, -1, :], dim=-1)
             tokens = torch.cat([tokens, next_token.unsqueeze(0)], dim=-1)
-    return tokenizer.decode(tokens[0])
+    return tokenizer.decode(tokens[0], skip_special_tokens=True)
 
 # 모델 테스트
 print("📝 Testing model...")
