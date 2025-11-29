@@ -9,7 +9,7 @@ class Brain:
             self.model = None
         else:
             genai.configure(api_key=api_key)
-            self.model = genai.GenerativeModel('gemini-pro')
+            self.model = genai.GenerativeModel('gemini-flash-latest')
             self.chat = self.model.start_chat(history=[])
 
     def generate_response(self, prompt: str) -> str:
