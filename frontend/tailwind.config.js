@@ -8,11 +8,11 @@ export default {
     extend: {
       colors: {
         amadeus: {
-          dark: '#0a0a0a',
-          card: '#1a1a1a',
-          accent: '#3b82f6', // Blue accent
-          text: '#e5e5e5',
-          muted: '#a3a3a3'
+          dark: '#020602', // Very dark green background
+          card: '#0a1a0a', // Dark green card
+          accent: '#22c55e', // Vibrant green accent (Green-500)
+          text: '#f0fdf4', // Light mint text
+          muted: '#86efac' // Muted green
         }
       },
       fontFamily: {

@@ -52,7 +52,7 @@ const ChatInterface = () => {
                         key={idx}
                         className={`flex items-start space-x-3 ${msg.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}
                     >
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === 'assistant' ? 'bg-amadeus-accent' : 'bg-purple-600'
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === 'assistant' ? 'bg-amadeus-accent' : 'bg-emerald-700'
                             }`}>
                             {msg.role === 'assistant' ? <Bot size={18} className="text-white" /> : <User size={18} className="text-white" />}
                         </div>
@@ -92,7 +92,7 @@ const ChatInterface = () => {
                     <button
                         type="submit"
                         disabled={!input.trim() || isLoading}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-amadeus-accent text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-amadeus-accent text-white rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                         <Send size={18} />
                     </button>

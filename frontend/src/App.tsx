@@ -41,9 +41,9 @@ function App() {
 
         <div className="p-4 border-t border-gray-800">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500"></div>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-green-500 to-emerald-700"></div>
             <div>
-              <p className="text-sm font-medium text-white">사용자</p>
+              <p className="text-sm font-medium text-white">박원정</p>
               <p className="text-xs text-gray-500">온라인</p>
             </div>
           </div>
@@ -52,7 +52,7 @@ function App() {
 
       {/* Main Content */}
       <main className="flex-1 overflow-hidden relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-green-900/20 via-transparent to-transparent pointer-events-none"></div>
 
         <div className="h-full overflow-y-auto p-8">
           {activeTab === 'dashboard' ? <Dashboard /> : <ChatInterface />}

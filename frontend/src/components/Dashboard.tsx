@@ -1,21 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Sun, Cloud, CloudRain, Newspaper, Activity, Clock } from 'lucide-react';
+import { Sun, Cloud, CloudRain, Activity, Clock, Newspaper } from 'lucide-react';
 import { clsx } from 'clsx';
+import MarketChart from './MarketChart';
 
 interface BriefingData {
-    news: { title: string; source: string; time: string }[];
+    news: { title: string; source: string; time: string; url?: string }[];
     weather: { temp: number; condition: string; location: string; humidity: number };
     status: string;
+    market_data?: {
+        [key: string]: {
+            current_price: number;
+            change: number;
+            chart_data: { date: string; price: number }[]
+        } | null
+    };
 }
 
 const Dashboard = () => {
     const getGreeting = () => {
         const hour = new Date().getHours();
-        if (hour >= 5 && hour < 12) return "좋은 아침입니다.";
-        if (hour >= 12 && hour < 18) return "좋은 오후입니다.";
-        if (hour >= 18 && hour < 22) return "좋은 저녁입니다.";
-        return "편안한 밤 되세요.";
+        if (hour >= 5 && hour < 12) return "좋은 아침입니다, 박원정님.";
+        if (hour >= 12 && hour < 18) return "좋은 오후입니다, 박원정님.";
+        if (hour >= 18 && hour < 22) return "좋은 저녁입니다, 박원정님.";
+        return "편안한 밤 되세요, 박원정님.";
     };
 
     const [data, setData] = useState<BriefingData | null>(null);
@@ -91,13 +99,34 @@ const Dashboard = () => {
                 <div className="bg-amadeus-card border border-gray-800 rounded-xl p-6 hover:border-amadeus-accent/50 transition-colors group">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold text-white group-hover:text-amadeus-accent transition-colors">시간</h3>
-                        <Clock className="text-blue-500" />
+                        <Clock className="text-amadeus-accent" />
                     </div>
                     <div className="text-3xl font-bold text-white">
                         {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                     <p className="text-sm text-amadeus-muted mt-2">{new Date().toLocaleDateString()}</p>
                 </div>
+            </div>
+
+            {/* News Section */}
+            {/* Market Charts Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {data?.market_data?.['BTC-USD'] && (
+                    <MarketChart
+                        title="Bitcoin (BTC)"
+                        data={data.market_data['BTC-USD'].chart_data}
+                        currentPrice={data.market_data['BTC-USD'].current_price}
+                        change={data.market_data['BTC-USD'].change}
+                    />
+                )}
+                {data?.market_data?.['SPY'] && (
+                    <MarketChart
+                        title="S&P 500 (SPY)"
+                        data={data.market_data['SPY'].chart_data}
+                        currentPrice={data.market_data['SPY'].current_price}
+                        change={data.market_data['SPY'].change}
+                    />
+                )}
             </div>
 
             {/* News Section */}
@@ -109,9 +138,13 @@ const Dashboard = () => {
 
                 <div className="space-y-4">
                     {data?.news.map((item, index) => (
-                        <div key={index} className="flex items-start space-x-4 p-4 rounded-lg hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-gray-700">
+                        <div
+                            key={index}
+                            onClick={() => item.url && window.open(item.url, '_blank')}
+                            className="flex items-start space-x-4 p-4 rounded-lg hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-gray-700"
+                        >
                             <div className="flex-1">
-                                <h4 className="text-white font-medium mb-1">{item.title}</h4>
+                                <h4 className="text-white font-medium mb-1 group-hover:text-amadeus-accent transition-colors">{item.title}</h4>
                                 <div className="flex items-center space-x-3 text-xs text-amadeus-muted">
                                     <span className="bg-amadeus-accent/10 text-amadeus-accent px-2 py-0.5 rounded">{item.source}</span>
                                     <span>{item.time}</span>

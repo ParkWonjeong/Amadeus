@@ -35,6 +35,7 @@ class ChatResponse(BaseModel):
 class BriefingResponse(BaseModel):
     news: List[dict]
     weather: dict
+    market_data: dict
     status: str
 
 @app.get("/health")
@@ -54,9 +55,11 @@ async def get_briefing():
     try:
         news = briefing_service.get_news()
         weather = briefing_service.get_weather()
+        market_data = briefing_service.get_market_data()
         return BriefingResponse(
             news=news,
             weather=weather,
+            market_data=market_data,
             status="All systems operational."
         )
     except Exception as e:
